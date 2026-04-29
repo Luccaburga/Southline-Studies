@@ -2281,3 +2281,12 @@ img {
         width: 100%;
     }
 }
+
+/* Ocultar marca de agua del video */
+.hero {
+    overflow: hidden !important;
+}
+.hero-video {
+    transform: scale(1.08) !important;
+    transform-origin: center;
+}
