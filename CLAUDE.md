@@ -1,67 +1,81 @@
-# CLAUDE.md
-
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+# CLAUDE.md — Southline Studio
 
 ## Project Overview
 
-Southline Studio is a static marketing landing page for a web development and AI automation agency. It is a single-page site written in Spanish with no build tools, frameworks, or package managers — just HTML, CSS, and vanilla JavaScript.
+Static marketing landing page for Southline Studio, a web development and AI automation agency based in Argentina. Single-page site in Spanish. No build tools, no frameworks, no package managers — plain HTML, CSS, vanilla JS.
 
 ## Running Locally
 
-Open `index.html` directly in a browser, or serve it with any static file server:
-
 ```bash
-# Python
-python -m http.server 8080
-
-# Node
-npx serve .
+python -m http.server 3000
 ```
 
-There is no build step, no compilation, and no dependencies to install.
+Launch config: `.claude/launch.json` → server name `southline-studio` on port 3000.
+Preview via `mcp__Claude_Preview__preview_start` + `preview_screenshot`.
 
 ## Architecture
 
-### File Structure
+- `index.html` — Full page: Navbar → Hero → Pain/Solution → Showcases → Pricing → Use Cases → Ecosystem → Integral Services → Process → CTA → FAQ → Footer
+- `css/styles.css` — All styles with CSS custom properties
+- `js/main.js` — DOMContentLoaded: navbar scroll, mobile menu, IntersectionObserver animations, FAQ accordion, footer year
+- `Images/` — PNG logos, chatbot illustration, MP4 hero video
 
-- `index.html` — The entire page: 13 sequential sections (Navbar → Hero → Services → Portfolio → FAQ → Contact → Footer)
-- `css/styles.css` — All styles, organized into labeled sections with CSS custom properties
-- `js/main.js` — All interactivity, runs on `DOMContentLoaded`
-- `Images/` — Static assets (PNG logos, chatbot illustration, cloud background, MP4 video)
-- `update_icons.py` — One-time migration script (Phosphor → IonIcons), already applied; not needed for ongoing work
+## Design System
 
-### CSS Design System
+**Fonts:** `Bricolage Grotesque` (headings, 400–800) + `DM Sans` (body, 300–600) via Google Fonts.
 
-All design tokens are defined as CSS custom properties on `:root` in `css/styles.css`:
+**Brand tokens in `:root`:**
+- `--color-primary: #1D646B` (teal)
+- `--color-primary-hover: #154D53`
+- `--color-bg-dark: #080C12`
+- `--radius-sm/md/lg/xl`: 6/10/16/24px
+- `--shadow-sm/md/lg/glow`
 
-- Brand color: `--color-primary: #1D646B` (teal)
-- Fonts: `--font-heading: 'Outfit'` / `--font-body: 'Inter'` (loaded from Google Fonts)
-- Max content width: `--max-width: 1200px` (navbar uses 1600px)
-- Transitions: `--transition-fast`, `--transition-normal`, `--transition-slow`
-- Shadows: `--shadow-sm`, `--shadow-md`, `--shadow-lg`, `--shadow-glow`
+**Section backgrounds (light-first system):**
+- `.bg-light` — `#F7F8FA`
+- `.bg-brand-tint` — `#EAF3F3` (teal-tinted, used for Ecosistema)
+- `.bg-split-light` — white + ambient radial blobs (used for Pain/Solution)
+- `.bg-tech-grid` — light with dot grid pattern
+- `.section-dark` — `#080C12` dark, ONLY for the editorial Integral Services section
 
-Background color utility classes: `.bg-light`, `.bg-light-alt`, `.bg-light-soft`, `.section-dark`.
+**Icons:** IonIcons 7.1.0 via CDN (`<ion-icon name="...">`)
 
-### JavaScript (`js/main.js`)
+**Responsive breakpoints:**
+- `≤1024px`: grids 2-col, split stacks
+- `≤768px`: mobile nav drawer, horizontal scroll carousels
+- `≤480px`: hero font shrinks, buttons full-width
 
-Five behaviors, all in one `DOMContentLoaded` listener:
+## Contact / External Links
 
-1. **Navbar scroll** — adds `.scrolled` class on `window.scrollY > 50`
-2. **Mobile menu** — toggles `.active` on `.nav-links`, swaps hamburger/close icon
-3. **Scroll animations** — `IntersectionObserver` adds `.visible` to elements with `.fade-in`, `.fade-in-up`, `.fade-in-left`, `.fade-in-right`
-4. **FAQ accordion** — toggles `.active` and sets `maxHeight` on `.faq-answer` for smooth expand/collapse
-5. **Footer year** — writes `new Date().getFullYear()` into `#year`
+- WhatsApp: `https://wa.me/5491127201600` — do NOT change without confirmation
+- Email: `hola@southlinestudio.com`
 
-### Icons
+---
 
-Icons use **IonIcons 7.1.0** via CDN (`<ion-icon name="...">` custom elements). Both ESM and nomodule fallback scripts are included in `<head>`.
+## Frontend Design Rules
 
-### Responsive Breakpoints
+### Before writing any frontend code
+- Check `Images/` for brand assets. Use the real logo, never placeholders.
+- The brand color is `#1D646B`. Never substitute it.
 
-- `≤1024px`: services grid goes 2-column; portfolio goes 2-column; split layout stacks vertically
-- `≤768px`: mobile nav drawer; showcase rows stack; grids become horizontal scroll carousels (`overflow-x: auto; scroll-snap-type: x mandatory`)
-- `≤480px`: hero font shrinks; buttons go full-width and stack vertically
+### Anti-Generic Guardrails
+- **Colors:** Derive from `--color-primary`. Never default blues/purples.
+- **Shadows:** Use layered, tinted shadows (`rgba(16,25,42,...)`). Never flat `box-shadow: 0 4px 6px gray`.
+- **Typography:** Bricolage Grotesque for display, DM Sans for body. Apply `letter-spacing: -0.04em` on large headings.
+- **Gradients:** Layer radial gradients for depth. Add grain texture via SVG noise on dark sections only.
+- **Animations:** Only animate `transform` and `opacity`. Never `transition: all`.
+- **Interactive states:** Every clickable element needs hover + focus-visible. No exceptions.
+- **Depth:** Light sections use blob/radial ambients for depth. Dark section uses grain + glow.
+- **Spacing:** Consistent tokens — section padding 100px, card padding multiples of 8px.
 
-### Contact / External Links
+### Screenshot Workflow
+- Always use `mcp__Claude_Preview__preview_start` (name: `southline-studio`) before screenshots.
+- Force animations visible before screenshotting: `document.querySelectorAll('.fade-in,.fade-in-up,.fade-in-left,.fade-in-right').forEach(el=>el.classList.add('visible'))`
+- Check: spacing, font weight, colors, alignment, border-radius, shadows, responsive behavior.
+- Minimum 2 verification rounds after visual changes.
 
-All CTAs point to WhatsApp (`https://wa.me/5491127201600`) or `mailto:hola@southlinestudio.com`. These are the live business contact points — do not change them without confirmation.
+### Hard Rules
+- Edit existing files with `Edit` tool — never `Write` unless >80% rewrite.
+- No narrar el plan antes de ejecutar. Solo ejecutar.
+- No duplicar codigo en la respuesta si ya esta en el diff.
+- Paralelizar tool calls independientes en un solo mensaje.
